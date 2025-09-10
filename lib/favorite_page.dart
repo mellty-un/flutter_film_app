@@ -56,73 +56,55 @@ class FavoritePage extends StatelessWidget {
           ),
           Expanded(
             child: favorites.isEmpty
-                ? Center(
+                ? const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.movie_filter_outlined,
-                          size: 80,
-                          color: Color.fromARGB(255, 173, 180, 201),
-                        ),
+                      children: [
+                        Icon(Icons.movie_filter_outlined, size: 80, color: Color.fromARGB(255, 173, 180, 201)),
                         SizedBox(height: 12),
-                        Text(
-                          "Belum ada film favorit",
-                          style: TextStyle(fontSize: 20, color: Colors.black54),
-                        ),
+                        Text("Belum ada film favorit", style: TextStyle(fontSize: 20, color: Colors.black54)),
                       ],
                     ),
                   )
-                : ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: favorites.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      final movie = favorites[index];
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 4,
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(12),
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.asset(
-                              movie.posterAsset,
-                              width: 60,
-                              height: 90,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          title: Text(
-                            movie.title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          subtitle: Text(
-                            movie.genre,
-                            style: const TextStyle(color: Colors.black54),
-                          ),
-                          trailing: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.brown,
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => DetailPage(movie: movie),
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: GridView.builder(
+                itemCount: favorites.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 0.65),
+                itemBuilder: (context, i) {
+                  final movie = favorites[i];
+                  return GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailPage(movie: movie))),
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      clipBehavior: Clip.antiAlias,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(child: Image.asset(movie.posterAsset, fit: BoxFit.cover)),
+                          Positioned(
+                            bottom: 0, left: 0, right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter, end: Alignment.topCenter,
+                                  colors: [Colors.black87, Colors.transparent],
+                                ),
                               ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-          ),
+                              child: Text("${movie.title}\n${movie.genre}",
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          )
+
         ],
       ),
     );
